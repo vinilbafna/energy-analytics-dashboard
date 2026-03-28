@@ -49,8 +49,6 @@ def train_model(df):
 with st.spinner("⏳ Loading 1.4M records from UCI..."):
     df = load_data()
 
-# Show actual column names for debugging
-st.write("Columns found:", df.columns.tolist())
 
 with st.spinner("🤖 Training Random Forest model..."):
     model, r2, mae, target, features = train_model(df)
