@@ -113,4 +113,4 @@ if st.button("⚡ Predict Power"):
     st.success(f"⚡ Predicted Global Active Power: **{prediction:.4f} kW**")
 
 st.markdown("---")
-st.caption("Built by Vinendra | EIE, Nirma University | Dataset: UCI Household Power Consumption")
+st.caption("Built by Vinil Bafna | EI, Nirma University | Dataset: UCI Household Power Consumption")
