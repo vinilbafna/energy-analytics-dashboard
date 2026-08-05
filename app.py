@@ -12,22 +12,25 @@ st.title("⚡ Household Energy Consumption Analytics")
 st.markdown("**1.4M+ records | Random Forest Model | R² = 0.9989**")
 
 @st.cache_data
+@st.cache_data
 def load_data():
     url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00235/household_power_consumption.zip"
-    df = pd.read_csv(url, sep=";", na_values=["?"], low_memory=False,
-                     parse_dates={"DateTime": ["Date", "Time"]},
-                     dayfirst=True)
-    df.dropna(inplace=True)
+
+    df = pd.read_csv(
+        url,
+        compression="zip",
+        sep=";",
+        na_values=["?"],
+        low_memory=False
+    )
+
+    df["DateTime"] = pd.to_datetime(
+        df["Date"] + " " + df["Time"],
+        dayfirst=True
+    )
+
+    df.drop(columns=["Date", "Time"], inplace=True)
     df.set_index("DateTime", inplace=True)
-    # Normalize all column names
-    df.columns = [c.strip() for c in df.columns]
-    for col in df.columns:
-        df[col] = pd.to_numeric(df[col], errors='coerce')
-    df.dropna(inplace=True)
-    df["Hour"] = df.index.hour
-    df["Month"] = df.index.month
-    df["DayOfWeek"] = df.index.dayofweek
-    return df
 
 @st.cache_resource
 def train_model(df):
