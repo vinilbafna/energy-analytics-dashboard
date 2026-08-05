@@ -12,7 +12,6 @@ st.title("⚡ Household Energy Consumption Analytics")
 st.markdown("**1.4M+ records | Random Forest Model | R² = 0.9989**")
 
 @st.cache_data
-@st.cache_data
 def load_data():
     url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00235/household_power_consumption.zip"
 
@@ -21,17 +20,32 @@ def load_data():
         compression="zip",
         sep=";",
         na_values=["?"],
-        low_memory=False
+        low_memory=False,
     )
 
     df["DateTime"] = pd.to_datetime(
         df["Date"] + " " + df["Time"],
-        dayfirst=True
+        dayfirst=True,
     )
 
     df.drop(columns=["Date", "Time"], inplace=True)
     df.set_index("DateTime", inplace=True)
 
+    df.columns = [c.strip() for c in df.columns]
+
+    for col in df.columns:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    df.dropna(inplace=True)
+
+    df["Hour"] = df.index.hour
+    df["Month"] = df.index.month
+    df["DayOfWeek"] = df.index.dayofweek
+
+    st.write(df.head())
+    st.write(df.shape)
+
+    return df
 @st.cache_resource
 def train_model(df):
     target = [c for c in df.columns if 'active_power' in c.lower()][0]
